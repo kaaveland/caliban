@@ -14,7 +14,7 @@ import sttp.model._
 import sttp.model.sse.ServerSentEvent
 import sttp.tapir.client.sttp.SttpClientInterpreter
 import sttp.tapir.client.sttp.ws.zio._
-import sttp.tapir.json.jsoniter._
+import MaxCharBufSizeJsonJsoniter._
 import sttp.tapir.model.{ ConnectionInfo, ServerRequest }
 import sttp.tapir.{ AttributeKey, DecodeResult }
 import zio.stream.{ ZPipeline, ZSink, ZStream }

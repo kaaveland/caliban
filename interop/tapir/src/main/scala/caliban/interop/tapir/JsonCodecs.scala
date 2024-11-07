@@ -2,7 +2,7 @@ package caliban.interop.tapir
 
 import caliban.{ GraphQLRequest, ResponseValue }
 import sttp.tapir.Codec.JsonCodec
-import sttp.tapir.json.jsoniter._
+import MaxCharBufSizeJsonJsoniter._
 
 private object JsonCodecs {
   import caliban.interop.jsoniter.ValueJsoniter.stringListCodec

@@ -5,7 +5,7 @@ import caliban.interop.tapir.TapirAdapter._
 import caliban.ws.Protocol
 import sttp.capabilities.zio.ZioStreams
 import sttp.model.{ headers => _ }
-import sttp.tapir.json.jsoniter._
+import MaxCharBufSizeJsonJsoniter._
 import sttp.tapir._
 import sttp.tapir.model.{ ServerRequest, UnsupportedWebSocketFrameException }
 import sttp.tapir.server.ServerEndpoint

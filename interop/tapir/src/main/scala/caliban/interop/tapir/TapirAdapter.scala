@@ -9,7 +9,7 @@ import sttp.model.sse.ServerSentEvent
 import sttp.model.{ headers => _, _ }
 import sttp.monad.MonadError
 import sttp.shared.Identity
-import sttp.tapir.json.jsoniter._
+import MaxCharBufSizeJsonJsoniter._
 import sttp.tapir.model.ServerRequest
 import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.ztapir.ZioServerSentEvents

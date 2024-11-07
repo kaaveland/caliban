@@ -75,7 +75,8 @@ final private class QuickRequestHandler[R](
 
     def decodeQueryParams(queryParams: QueryParams): Either[Response, GraphQLRequest] = {
       def extractField(key: String) =
-        try Right(queryParams.getAll(key).headOption.map(readFromString[InputValue.ObjectValue](_).fields))
+        try
+          Right(queryParams.getAll(key).headOption.map(readFromString[InputValue.ObjectValue](_, readerConfig).fields))
         catch { case NonFatal(_) => Left(badRequest(s"Invalid $key query param")) }
 
       for {
@@ -101,7 +102,7 @@ final private class QuickRequestHandler[R](
         body.asArray.foldZIO(
           _ => Exit.fail(BodyDecodeErrorResponse),
           arr =>
-            try checkNonEmptyRequest(readFromArray[GraphQLRequest](arr))
+            try checkNonEmptyRequest(readFromArray[GraphQLRequest](arr, readerConfig))
             catch { case NonFatal(_) => Exit.fail(BodyDecodeErrorResponse) }
         )
 
@@ -136,7 +137,7 @@ final private class QuickRequestHandler[R](
       Exit
         .fromOption(partsMap.get(key))
         .flatMap(_.asChunk)
-        .flatMap(v => Exit.fromTry(Try(readFromArray[A](v.toArray))))
+        .flatMap(v => Exit.fromTry(Try(readFromArray[A](v.toArray, readerConfig))))
         .orElseFail(Response.badRequest)
 
     def parsePath(path: String): List[PathValue] = path.split('.').toList.map(PathValue.parse)
@@ -265,7 +266,7 @@ final private class QuickRequestHandler[R](
                  case ChannelEvent.UserEventTriggered(HandshakeComplete) =>
                    out.runForeach(frame => ch.send(ChannelEvent.Read(frame))).forkScoped
                  case ChannelEvent.Read(WebSocketFrame.Text(text))       =>
-                   ZIO.suspend(queue.offer(readFromString[GraphQLWSInput](text)))
+                   ZIO.suspend(queue.offer(readFromString[GraphQLWSInput](text, readerConfig)))
                  case _                                                  =>
                    ZIO.unit
                })
@@ -309,4 +310,9 @@ object QuickRequestHandler {
     }
 
   private implicit val responseCodec: JsonValueCodec[ResponseValue] = ValueJsoniter.responseValueCodec
+
+  private val readerConfig: ReaderConfig = ReaderConfig
+    .withAppendHexDumpToParseException(false)
+    .withMaxBufSize(Int.MaxValue - 2)
+    .withMaxCharBufSize(Int.MaxValue - 2)
 }
