@@ -42,7 +42,7 @@ object QuickAdapterSpec extends ZIOSpecDefault {
     suite.provideShared(
       apiLayer,
       Scope.default,
-      Server.defaultWith(_.port(8090).responseCompression())
+      Server.defaultWith(_.port(8090).enableRequestStreaming.responseCompression())
     )
   }
 }
